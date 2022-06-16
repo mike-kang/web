@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <custom-input name="꼬꼬"></custom-input>
+    <custom-input name="메롱"></custom-input>
+    <custom-input name="삐삐"></custom-input>
+    <br>
+    <video is="my-video2" controls width="250" autoplay muted="true">
+      <source src="Jellyfish.mp4"
+              type="video/mp4">
+  
+      Sorry, your browser doesn't support embedded videos.
+  </video>
+</body>
+<script>
+class newClass extends HTMLElement {
+  connectedCallback() {
+    this.innerHTML = `<label>안뇨오옹</label><input>`
+  }
+  static get observedAttributes() {
+    return ['name']
+    // name 이라는 attribute 바뀌는지 감지
+  }
+  
+  attributeChangedCallback() {
+    //바뀌면 실행
+    console.log('바귄다');
+        this.innerHTML = `<label>바뀐다!!!</label><input>`
+  }
+}
+customElements.define('custom-input', newClass)
+class MyVideo extends HTMLVideoElement {
+  constructor(){
+    super();
+    console.log("MyVideo");
+    this.addEventListener('seeking', () => {
+            if (this.buffered.length) {
+                let bStart = this.buffered.start(0);
+                let bEnd   = this.buffered.end(0);
+                let bDuration = bEnd - bStart;
+
+                if (bDuration > 0 && (this.currentTime < bStart || this.currentTime > bEnd)) {
+                    if (this.currentTime < bStart){
+                        this.currentTime = bStart;
+                    } else {
+                        this.currentTime = bEnd - 1;
+                    }
+                }
+            }
+        }, false);
+  }
+  connectedCallback() {
+    console.log('Custom square element added to page.');
+  }
+}
+customElements.define('my-video', MyVideo, { extends: 'video'});
+class MyVideo2 extends MyVideo{
+  constructor(){
+    super();
+    console.log("MyVideo2");
+
+  }
+  connectedCallback() {
+    console.log('Custom square element2 added to page.');
+  }
+}
+customElements.define('my-video2', MyVideo2, { extends: 'video'});
+</script>
+</html>
